@@ -9,6 +9,7 @@ from PIL import Image
 import urllib.request
 import base64
 import os
+import uuid
 
 client = AsyncOpenAI()
 
@@ -18,7 +19,7 @@ def encode_image(image_path):
         return base64.b64encode(image_file.read()).decode("utf-8")
 
 
-async def take_photo(f):
+async def take_photo(f, prefix):
     print("Taking photo")
     await f.display.show_text("Taking photo...", align=Alignment.MIDDLE_CENTER)
     photo_bytes = await f.camera.take_photo(
@@ -27,28 +28,19 @@ async def take_photo(f):
         autofocus_type=AutofocusType.CENTER_WEIGHTED,
     )
 
-    with open("photo.jpg", "wb") as fh:
+    os.makedirs(os.path.dirname(f"{prefix}photo.jpg"), exist_ok=True)
+    with open(f"{prefix}photo.jpg", "wb") as fh:
         fh.write(photo_bytes)
 
-    im = Image.open("photo.jpg")
+    im = Image.open(f"{prefix}photo.jpg")
 
     # convert image to png
-    im.convert("RGBA").rotate(90).save("photo.png")
+    im.convert("RGBA").rotate(90).save(f"{prefix}photo.png")
 
-    # response = await client.images.edit(
-    #     model="dall-e-2",
-    #     image=open("photo.png", "rb"),
-    #     mask=open("transparent.png", "rb"),
-    #     prompt="sharpen",
-    #     n=1,
-    #     size="512x512",
-    # )
+    print("Photo taken")
+    await f.display.show_text("Finished taking photo, tap to take another.", align=Alignment.MIDDLE_CENTER)
 
-    # edited_url = response.data[0].url
-    # urllib.request.urlretrieve(edited_url, "edited_photo.png")
-
-
-async def poke():
+async def poke(prefix, id):
     base64_image = encode_image("photo.png")
 
     headers = {
@@ -91,6 +83,11 @@ async def poke():
             json = await response.json()
             print(json["choices"][0]["message"]["content"])
 
+            data_js = "site/data.js"
+
+            with open(data_js, "w") as fh:
+                fh.write(f"var data = {json['choices'][0]['message']['content']};")
+                fh.write(f"var photo_url = \"p/{id}/photo.png\";")
 
 async def record_audio(f):
     SECONDS = 10
@@ -128,60 +125,21 @@ async def countdown(i):
 
 
 async def main():
-    await poke()
-    return
-
     async with Frame() as f:
         print("Frame initialized")
         # f.bluetooth.print_debugging = True
-        await f.display.show_text("Tap to start", align=Alignment.MIDDLE_CENTER)
-        # await f.motion.wait_for_tap()
+        while True:
+            await f.display.show_text("Tap to start", align=Alignment.MIDDLE_CENTER)
+            await f.motion.wait_for_tap()
 
-        # record audio
-        # await record_audio(f)
-        # await speech_to_text(f)
+            id = uuid.uuid4()
+            prefix = f"site/p/{id}/"
 
-        # take a photo and save to disk
-        await roast()
+            await take_photo(f, prefix)
 
-        # response = await client.images.edit(
-        #     model="dall-e-2",
-        #     image=open("photo.png", "rb"),
-        #     prompt="photo stacked high resolution macro photograph",
-        #     n=1,
-        #     size="512x512",
-        # )
+            await poke(prefix, id)
 
-        # edited_url = response.data[0].url
-        # urllib.request.urlretrieve(edited_url, "edited_photo.jpg")
-
-        # await f.camera.save_photo("photo.jpg", autofocus_seconds=1)
-
-        # record
-        # print(f"Recording audio with maximum of {SECONDS} seconds")
-        # await f.display.show_text("Recording audio", align=Alignment.MIDDLE_CENTER)
-        # # [audio_data, _] = await asyncio.gather(
-        # #     *[
-        # #         f.microphone.record_audio(max_length_in_seconds=SECONDS),
-        # #         countdown(SECONDS),
-        # #     ]
-        # # )
-        # audio_data = await f.microphone.record_audio(max_length_in_seconds=SECONDS)
-
-        # await f.display.show_text(
-        #     f"Playing back {len(audio_data) / f.microphone.sample_rate:01.1f} seconds of audio",
-        #     align=Alignment.MIDDLE_CENTER,
-        # )
-        # f.microphone.play_audio(audio_data)
-
-        # # display battery level, time, and date
-        # text_to_display = (
-        #     f"{await f.get_battery_level()}%\n"
-        #     + datetime.datetime.now().strftime("%-I:%M %p\n%a, %B %d, %Y")
-        # )
-        # await f.display.show_text(text_to_display, align=Alignment.MIDDLE_CENTER)
-
-        print("done")
+            print("done")
 
 
 asyncio.run(main())
