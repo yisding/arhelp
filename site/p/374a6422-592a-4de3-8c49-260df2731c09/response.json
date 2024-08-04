@@ -1,0 +1,9 @@
+{
+  "description": "Known for its incredible focus and speed at processing data, it thrives in dynamic environments and can outpace competition with its rapid analytical abilities.",
+  "type": "Electric",
+  "typeBackgroundColor": "#f8d030",
+  "hp": 85,
+  "attack": 70,
+  "defense": 65,
+  "speed": 105
+}

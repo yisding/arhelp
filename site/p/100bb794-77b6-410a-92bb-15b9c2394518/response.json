@@ -1,0 +1,9 @@
+{
+  "description": "Known for its incredible focus and speed in processing information, this Pokémon thrives in dynamic environments and can outpace most others in problem-solving scenarios.",
+  "type": "Electric",
+  "typeBackgroundColor": "#F8D030",
+  "hp": 85,
+  "attack": 70,
+  "defense": 70,
+  "speed": 120
+}

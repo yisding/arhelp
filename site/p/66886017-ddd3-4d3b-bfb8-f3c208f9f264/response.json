@@ -1,0 +1,9 @@
+{
+  "description": "Thrives in environments filled with technology and innovation. Known for a swift ability to process complex information and adapt to dynamic challenges.",
+  "type": "Electric",
+  "typeBackgroundColor": "#f8d030",
+  "hp": 85,
+  "attack": 70,
+  "defense": 75,
+  "speed": 90
+}

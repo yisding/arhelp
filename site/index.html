@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="./data.js"></script>
+</head>
+
+<div class="w-full h-full flex justify-center content-center">
+  <div class="bg-[#f0f0f0] rounded-lg shadow-lg overflow-hidden w-[400px]">
+    <div class="relative">
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-[#ffcb05] opacity-30"
+        id="gradient"
+      ></div>
+      <div class="m-4">
+        <img
+          class="rounded-lg"
+          id="hero"
+          src="/placeholder.svg"
+          alt="Pokémon"
+          style=""
+          class="relative z-10 w-full aspect-square object-contain"
+        />
+      </div>
+    </div>
+    <div class="p-4 bg-[#f1f1f1]">
+      <div class="flex items-center mb-2">
+        <span class="bg-[#f08030] text-white px-2 py-1 rounded-md text-sm mr-2" id="type">
+          ></span
+        >
+      </div>
+      <p class="text-[#666] mb-4" id="desc"></p>
+      <div class="grid grid-cols-2 gap-2">
+        <div class="bg-[#e0e0e0] rounded-md p-2 text-center">
+          <p class="text-sm text-[#666]">HP</p>
+          <p class="text-lg font-bold text-[#333]" id="hp"></p>
+        </div>
+        <div class="bg-[#e0e0e0] rounded-md p-2 text-center">
+          <p class="text-sm text-[#666]">Attack</p>
+          <p class="text-lg font-bold text-[#333]" id="attack"></p>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-2 mt-2">
+        <div class="bg-[#e0e0e0] rounded-md p-2 text-center">
+          <p class="text-sm text-[#666]">Defense</p>
+          <p class="text-lg font-bold text-[#333]" id="defense"></p>
+        </div>
+        <div class="bg-[#e0e0e0] rounded-md p-2 text-center">
+          <p class="text-sm text-[#666]">Speed</p>
+          <p class="text-lg font-bold text-[#333]" id="speed"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  console.log(data);
+  const hero = document.getElementById("hero");
+  hero.src = photo_url;
+
+  const desc = document.getElementById("desc");
+  desc.textContent = data.description;
+
+  const hp = document.getElementById("hp");
+  hp.textContent = data.hp;
+
+  const attack = document.getElementById("attack");
+  attack.textContent = data.attack;
+
+  const defense = document.getElementById("defense");
+  defense.textContent = data.defense;
+
+  const speed = document.getElementById("speed");
+  speed.textContent = data.speed;
+
+  const type = document.getElementById("type");
+  type.textContent = data.type;
+
+  const gradient = document.getElementById("gradient");
+  //  to-[#f1f1f1]
+  gradient.classList.add(`to-[${data.typeBackgroundColor}]`);
+</script>
